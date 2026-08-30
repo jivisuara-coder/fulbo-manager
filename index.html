@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Fulbo Manager</title>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
       margin: 0;
@@ -50,6 +50,12 @@
     <h2>Jugadores</h2>
     <p>Administrá los jugadores de tu grupo de fútbol.</p>
   </main>
+<script>
+  const SUPABASE_URL = "https://xwdslmdvgicenqqbrqev.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_4J2txbexu0gyhnFvmGtDjQ_9Ic2vDN5";
 
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
 </body>
 </html>
+
