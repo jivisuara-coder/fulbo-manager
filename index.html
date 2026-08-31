@@ -47,6 +47,26 @@
   </header>
 
   <main>
+    <section id="acceso">
+  <h2>Ingresar</h2>
+
+  <input
+    type="email"
+    id="email"
+    placeholder="Tu email"
+  >
+
+  <input
+    type="password"
+    id="password"
+    placeholder="Tu contraseña"
+  >
+
+  <button onclick="registrarse()">Registrarme</button>
+  <button onclick="iniciarSesion()">Iniciar sesión</button>
+
+  <p id="estado-auth"></p>
+</section>
     <section id="proximo-partido">
   <h2>Próximo partido</h2>
   <div id="datos-partido">
@@ -68,6 +88,41 @@
   const SUPABASE_KEY = "sb_publishable_4J2txbexu0gyhnFvmGtDjQ_9Ic2vDN5";
 
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  async function registrarse() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const estado = document.getElementById("estado-auth");
+
+  const { data, error } = await db.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    estado.textContent = "Error: " + error.message;
+    return;
+  }
+
+  estado.textContent = "Registro realizado. Revisá tu email.";
+}
+
+async function iniciarSesion() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const estado = document.getElementById("estado-auth");
+
+  const { data, error } = await db.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    estado.textContent = "Error: " + error.message;
+    return;
+  }
+
+  estado.textContent = "Sesión iniciada correctamente.";
+}
   async function cargarJugadores() {
   const { data, error } = await db
     .from("jugadores")
