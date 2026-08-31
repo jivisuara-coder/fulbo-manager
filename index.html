@@ -53,6 +53,12 @@
     <p>Cargando partido...</p>
   </div>
 </section>
+    <section id="inscriptos">
+  <h2>Inscriptos</h2>
+  <div id="lista-inscriptos">
+    <p>Cargando inscriptos...</p>
+  </div>
+</section>
     <h2>Jugadores</h2>
     <p>Administrá los jugadores de tu grupo de fútbol.</p>
     <div id="lista-jugadores"></div>
@@ -106,8 +112,41 @@ contenedor.innerHTML = `
   <p>Estado: ${partido.estado}</p>
 `;
 }
+  async function cargarInscriptos() {
+  const { data, error } = await db
+    .from("inscripciones")
+    .select(`
+      estado,
+      equipo,
+      jugadores (
+        alias
+      )
+    `)
+    .eq("partido_id", 1);
+
+  const contenedor = document.getElementById("lista-inscriptos");
+
+  if (error) {
+    contenedor.innerHTML = "<p>Error al cargar inscriptos.</p>";
+    console.error(error);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    contenedor.innerHTML = "<p>Todavía no hay jugadores inscriptos.</p>";
+    return;
+  }
+
+  contenedor.innerHTML = data.map(inscripcion => `
+    <p>
+      ⚽ <strong>${inscripcion.jugadores.alias}</strong>
+      - ${inscripcion.estado}
+    </p>
+  `).join("");
+}
 cargarJugadores();
   cargarPartidos();
+  cargarInscriptos();
 </script>
 </body>
 </html>
