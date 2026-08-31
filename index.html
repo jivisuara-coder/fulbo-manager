@@ -47,6 +47,12 @@
   </header>
 
   <main>
+    <section id="proximo-partido">
+  <h2>Próximo partido</h2>
+  <div id="datos-partido">
+    <p>Cargando partido...</p>
+  </div>
+</section>
     <h2>Jugadores</h2>
     <p>Administrá los jugadores de tu grupo de fútbol.</p>
     <div id="lista-jugadores"></div>
@@ -73,8 +79,35 @@
     <p>⚽ <strong>${jugador.alias}</strong></p>
   `).join("");
 }
+async function cargarPartidos() {
+  const { data, error } = await db
+    .from("partidos")
+    .select("*")
+    .order("fecha", { ascending: true });
 
+  if (error) {
+    console.error("Error al cargar partidos:", error);
+    return;
+  }
+
+  const contenedor = document.getElementById("datos-partido");
+
+if (!data || data.length === 0) {
+  contenedor.innerHTML = "<p>No hay partidos programados.</p>";
+  return;
+}
+
+const partido = data[0];
+
+contenedor.innerHTML = `
+  <p><strong>${partido.dia}</strong></p>
+  <p>📅 ${partido.fecha}</p>
+  <p>⏰ ${partido.hora}</p>
+  <p>Estado: ${partido.estado}</p>
+`;
+}
 cargarJugadores();
+  cargarPartidos();
 </script>
 </body>
 </html>
