@@ -202,12 +202,26 @@ contador.textContent =
     return;
   }
 
-  contenedor.innerHTML = data.map(inscripcion => `
-    <p>
-      ⚽ <strong>${inscripcion.jugadores.alias}</strong>
-      - ${inscripcion.estado}
-    </p>
-  `).join("");
+  const titulares = data.filter(inscripcion => inscripcion.estado === "titular");
+const suplentes = data.filter(inscripcion => inscripcion.estado === "suplente");
+
+contenedor.innerHTML = `
+  <h3>Titulares (${titulares.length})</h3>
+
+  ${titulares.map(inscripcion => `
+    <p>⚽ <strong>${inscripcion.jugadores.alias}</strong></p>
+  `).join("")}
+
+  <h3>Suplentes (${suplentes.length})</h3>
+
+  ${
+    suplentes.length > 0
+      ? suplentes.map(inscripcion => `
+          <p>🪑 <strong>${inscripcion.jugadores.alias}</strong></p>
+        `).join("")
+      : "<p>No hay suplentes.</p>"
+  }
+`;
 }
   async function anotarme() {
   const estado = document.getElementById("estado-inscripcion");
