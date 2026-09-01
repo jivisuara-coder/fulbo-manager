@@ -222,6 +222,22 @@ contenedor.innerHTML = `
     estado.textContent = "No encontramos un jugador asociado a este usuario.";
     return;
   }
+    const { data: yaInscripto, error: errorDuplicado } = await db
+  .from("inscripciones")
+  .select("id")
+  .eq("partido_id", 1)
+  .eq("jugador_id", jugador.id)
+  .maybeSingle();
+
+if (errorDuplicado) {
+  estado.textContent = "Error al verificar la inscripción.";
+  return;
+}
+
+if (yaInscripto) {
+  estado.textContent = "Ya estás anotado en este partido.";
+  return;
+}
 
   const { error } = await db
     .from("inscripciones")
