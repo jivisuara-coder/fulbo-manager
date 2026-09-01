@@ -77,6 +77,7 @@
 </section>
     <section id="inscriptos">
   <h2>Inscriptos</h2>
+      <p id="contador-inscriptos"></p>
   <div id="lista-inscriptos">
     <p>Cargando inscriptos...</p>
   </div>
@@ -189,7 +190,13 @@ contenedor.innerHTML = `
     console.error(error);
     return;
   }
+const contador = document.getElementById("contador-inscriptos");
 
+const cantidad = data.length;
+const lugares = Math.max(14 - cantidad, 0);
+
+contador.textContent =
+  `${cantidad} de 14 inscriptos · ${lugares} lugares disponibles`;
   if (!data || data.length === 0) {
     contenedor.innerHTML = "<p>Todavía no hay jugadores inscriptos.</p>";
     return;
