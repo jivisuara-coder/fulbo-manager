@@ -245,13 +245,25 @@ if (yaInscripto) {
   estado.textContent = "Ya estás anotado en este partido.";
   return;
 }
+    const { count, error: errorCupo } = await db
+  .from("inscripciones")
+  .select("*", { count: "exact", head: true })
+  .eq("partido_id", 1)
+  .eq("estado", "titular");
+
+if (errorCupo) {
+  estado.textContent = "Error al verificar los cupos.";
+  return;
+}
+
+const nuevoEstado = count < 14 ? "titular" : "suplente";
 
   const { error } = await db
     .from("inscripciones")
     .insert({
       partido_id: 1,
       jugador_id: jugador.id,
-      estado: "titular"
+     estado: nuevoEstado
     });
 
   if (error) {
