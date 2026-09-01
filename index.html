@@ -72,12 +72,15 @@
   <div id="datos-partido">
     <p>Cargando partido...</p>
   </div>
+          <button onclick="anotarme()">Anotarme</button>
+<p id="estado-inscripcion"></p>
 </section>
     <section id="inscriptos">
   <h2>Inscriptos</h2>
   <div id="lista-inscriptos">
     <p>Cargando inscriptos...</p>
   </div>
+  
 </section>
     <h2>Jugadores</h2>
     <p>Administrá los jugadores de tu grupo de fútbol.</p>
@@ -198,6 +201,43 @@ contenedor.innerHTML = `
       - ${inscripcion.estado}
     </p>
   `).join("");
+}
+  async function anotarme() {
+  const estado = document.getElementById("estado-inscripcion");
+
+  const { data: { user } } = await db.auth.getUser();
+
+  if (!user) {
+    estado.textContent = "Primero tenés que iniciar sesión.";
+    return;
+  }
+
+  const { data: jugador, error: errorJugador } = await db
+    .from("jugadores")
+    .select("id")
+    .eq("email", user.email)
+    .single();
+
+  if (errorJugador || !jugador) {
+    estado.textContent = "No encontramos un jugador asociado a este usuario.";
+    return;
+  }
+
+  const { error } = await db
+    .from("inscripciones")
+    .insert({
+      partido_id: 1,
+      jugador_id: jugador.id,
+      estado: "titular"
+    });
+
+  if (error) {
+    estado.textContent = "Error al anotarte: " + error.message;
+    return;
+  }
+
+  estado.textContent = "Te anotaste correctamente.";
+  cargarInscriptos();
 }
 cargarJugadores();
   cargarPartidos();
